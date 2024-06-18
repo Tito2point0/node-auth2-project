@@ -83,6 +83,7 @@ const validateRoleName = (req, res, next) => {
       
     })
   } else {
+    req.role_name = req.body.role_name.trim()
     next()
   }
 }
