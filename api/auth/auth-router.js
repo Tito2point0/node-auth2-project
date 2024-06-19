@@ -12,21 +12,24 @@ router.post("/register", validateRoleName, (req, res, next) => {
     response:
     status 201
     {
-      "user"_id: 3,
+      "user_id": 3,
       "username": "anna",
       "role_name": "angel"
     }
    */
-  const { username, password } = req.body
-  const { role_name } = req
-  const hash = bcrypt.hashSync(password, 8)
-  User.add({ username, password : hash, role_name })
+  const { username, password } = req.body;
+  const { role_name } = req;
+  const hash = bcrypt.hashSync(password, 8);
+  User.add({ username, password: hash, role_name })
     .then(newUser => {
-      res.status(201).json({newUser})
+      res.status(201).json({
+        user_id: newUser.user_id, // Ensure proper key names are returned
+        username: newUser.username,
+        role_name: newUser.role_name
+      });
     })
-  .catch(next)
+    .catch(next);
 });
-
 
 router.post("/login", checkUsernameExists, (req, res, next) => {
   /**
@@ -51,7 +54,7 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
   if (bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
     res.json({
-        "message": `${req.user.username} is back`,
+        "message": `${req.user.username} is back!`,
          token,
     })
   } else {
